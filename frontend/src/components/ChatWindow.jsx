@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { SocketContext } from "../context/SocketContext";
+import SocketContext from "../context/SocketContext";
 import ChatHeader from "./ChatHeader";
 
 const ChatWindow = ({ chatId }) => {
@@ -224,7 +224,7 @@ const ChatWindow = ({ chatId }) => {
                         }
 
                         return (
-                          <p className="whitespace-pre-wrap break-words">
+                            <p className="whitespace-pre-wrap wrap-break-word">
                             {msg.content}
                           </p>
                         );

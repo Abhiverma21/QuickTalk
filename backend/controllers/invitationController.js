@@ -1,6 +1,7 @@
 import Invitation from "../models/Invitation.js";
 import User from "../models/User.js";
 import Chat from "../models/Chat.js";
+import Notification from "../models/Notification.js";
 import { io } from "../server.js";
 
 // helper → ALWAYS return populated invitation
@@ -60,6 +61,20 @@ export const sendInvitation = async (req, res) => {
 
       const populatedInvitation = await getPopulatedInvitation(invitation._id);
 
+      // create notification for receiver
+      try {
+        const notification = await Notification.create({
+          sender,
+          receiver,
+          type: "invitation",
+          text: `${populatedInvitation.sender.name} sent you an invitation`,
+        });
+
+        io.to(receiver.toString()).emit("newNotification", notification);
+      } catch (e) {
+        console.log("Notification error (sendInvitation):", e.message);
+      }
+
       io.to(receiver.toString()).emit("newInvitation", populatedInvitation);
 
       invitations.push(populatedInvitation);
@@ -114,6 +129,21 @@ export const acceptInvitation = async (req, res) => {
 
     const populatedInvitation = await getPopulatedInvitation(invitation._id);
 
+    // create notification for sender about acceptance
+    try {
+      const notification = await Notification.create({
+        sender: receiverId,
+        receiver: senderId,
+        type: "accept",
+        text: `${populatedInvitation.receiver.name} accepted your invitation`,
+        chatId: chat._id,
+      });
+
+      io.to(senderId.toString()).emit("newNotification", notification);
+    } catch (e) {
+      console.log("Notification error (acceptInvitation):", e.message);
+    }
+
     io.to(senderId.toString()).emit("invitationAccepted", populatedInvitation);
     io.to(receiverId.toString()).emit("invitationAccepted", populatedInvitation);
     io.to(receiverId.toString()).emit("newChat", chat);
@@ -151,15 +181,23 @@ export const rejectInvitation = async (req, res) => {
 
     const populatedInvitation = await getPopulatedInvitation(invitation._id);
 
-    io.to(invitation.sender.toString()).emit(
-      "invitationRejected",
-      populatedInvitation
-    );
+    // create notification for sender about rejection
+    try {
+      const notification = await Notification.create({
+        sender: invitation.receiver,
+        receiver: invitation.sender,
+        type: "reject",
+        text: `${populatedInvitation.receiver.name} rejected your invitation`,
+      });
 
-    io.to(invitation.receiver.toString()).emit(
-      "invitationRejected",
-      populatedInvitation
-    );
+      io.to(invitation.sender.toString()).emit("newNotification", notification);
+    } catch (e) {
+      console.log("Notification error (rejectInvitation):", e.message);
+    }
+
+    io.to(invitation.sender.toString()).emit("invitationRejected", populatedInvitation);
+
+    io.to(invitation.receiver.toString()).emit("invitationRejected", populatedInvitation);
 
     return res.status(200).json({
       message: "Invitation rejected",

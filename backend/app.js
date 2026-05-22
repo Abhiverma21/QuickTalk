@@ -8,6 +8,7 @@ import invitationRoutes from "./routes/invitationRoutes.js"
 import chatRoutes from "./routes/chatRoutes.js"
 import groupRoutes from "./routes/groupRoutes.js"
 import messageRoutes from "./routes/messageRoutes.js"
+import notificationRoutes from "./routes/notificationRoutes.js"
 configDotenv();
 
 const app = express();
@@ -24,7 +25,8 @@ app.use("/api/users" , userRoutes);
 app.use("/api/invitation" , invitationRoutes);
 app.use("/api/chats" , chatRoutes);
 app.use("/api/groups" , groupRoutes);
-app.use("/api/message" , messageRoutes)
+app.use("/api/message" , messageRoutes);
+app.use("/api/notification" , notificationRoutes);
 
 connectDB();
 

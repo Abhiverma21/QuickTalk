@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, useContext, useRef } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { SocketContext } from "../context/SocketContext";
+import SocketContext from "../context/SocketContext";
 
 const GroupChatWindow = ({ chatId }) => {
   const { user } = useContext(AuthContext);

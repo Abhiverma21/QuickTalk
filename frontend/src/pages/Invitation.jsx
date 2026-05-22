@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import api from "../api/axios";
 import InvitationCard from "../components/InvitationCard.jsx";
-import { SocketContext } from "../context/SocketContext.jsx";
+import  SocketContext  from "../context/SocketContext.jsx";
 
 const InvitationPage = () => {
   const { socket } = useContext(SocketContext);

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { SocketContext } from "../context/SocketContext";
+import SocketContext from "../context/SocketContext";
 
 const ChatList = ({ onSelectChat }) => {
   const { user } = useContext(AuthContext);

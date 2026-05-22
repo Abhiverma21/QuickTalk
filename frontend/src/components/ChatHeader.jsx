@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { SocketContext } from "../context/SocketContext";
+import SocketContext from "../context/SocketContext";
 
 const ChatHeader = ({ chatId }) => {
   const { user } = useContext(AuthContext);
