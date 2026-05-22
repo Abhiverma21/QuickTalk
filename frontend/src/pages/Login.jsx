@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ const Login = () => {
         >
           Login
         </button>
+         <GoogleLoginButton/>
 
         <p className="text-center text-sm text-gray-600">
           Don’t have an account?{" "}
