@@ -30,15 +30,5 @@ app.use("/api/notification" , notificationRoutes);
 
 connectDB();
 
-app.get("/",(req,res)=>{
-    res.send("App running")
-})
-
-
-// app.listen(PORT ,()=>{
-//     console.log("App is listening on PORT : " , PORT);
-// })
-
-
 export default app;
 
