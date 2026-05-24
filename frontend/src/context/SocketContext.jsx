@@ -16,7 +16,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!user) return;
 
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io("https://quicktalk-6tna.onrender.com");
     // defer setState to avoid synchronous setState inside effect
     Promise.resolve().then(() => setSocket(newSocket));
 
