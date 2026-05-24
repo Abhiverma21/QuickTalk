@@ -16,8 +16,14 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!user) return;
 
-    const newSocket = io("https://quicktalk-6tna.onrender.com");
-    // defer setState to avoid synchronous setState inside effect
+const newSocket = io("https://quicktalk-6tna.onrender.com", {
+  transports: ["websocket", "polling"],
+  withCredentials: true,
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});    
+
     Promise.resolve().then(() => setSocket(newSocket));
 
     newSocket.on("userOnline", (userIds) => {
