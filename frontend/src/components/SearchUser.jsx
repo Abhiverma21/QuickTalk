@@ -95,9 +95,10 @@ const SearchUser = () => {
               key={user._id}
               className="p-3 border rounded-md hover:bg-gray-100 cursor-pointer"
             >
-              <p className="font-semibold">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
-              <button
+              <div className="flex">
+                 <img src={user.profilePic} className="size-10 rounded-3xl"/>
+                 <div> <p className="font-semibold">{user.name}</p>
+              <p className="text-sm text-gray-500">{user.email}</p>   <button
                 onClick={() => sendInvitation(user._id)}
                 disabled={
                   invited.includes(user._id) || friend.includes(user._id)
@@ -115,7 +116,11 @@ const SearchUser = () => {
                   : invited.includes(user._id)
                     ? "Invitation Sent"
                     : "Add Friend"}
-              </button>
+              </button></div>
+             
+              </div>
+             
+           
             </div>
           ))}
       </div>

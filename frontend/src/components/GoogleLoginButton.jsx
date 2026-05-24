@@ -11,7 +11,7 @@ const GoogleLoginButton = () => {
   const handleSuccess = async (credentialResponse) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/google",
+        "https://quicktalk-6tna.onrender.com/api/auth/google",
         {
           credential: credentialResponse.credential,
         }

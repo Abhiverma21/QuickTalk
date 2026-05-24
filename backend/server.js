@@ -4,7 +4,6 @@ import { configDotenv } from "dotenv";
 configDotenv();
 import app from "./app.js";
 import User from "./models/User.js";
-import { configDotenv } from "dotenv";
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 export const io = new Server(server, {

@@ -13,7 +13,7 @@ const GroupChatWindow = ({ chatId }) => {
   const [file, setFile] = useState(null);
 
   const [group, setGroup] = useState(null);
-  const [showMembers, setShowMembers] = useState(false);
+  const [showMembers,   setShowMembers] = useState(false);
   const [availableUsers, setAvailableUsers] = useState([]);
   const [selectedMsg, setSelectedMsg] = useState(null);
   const [editText, setEditText] = useState("");
