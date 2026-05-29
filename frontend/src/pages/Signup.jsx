@@ -6,22 +6,18 @@ import GoogleLoginButton from "../components/GoogleLoginButton";
 const Signup = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
   });
-
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
-  const [showPassword , setShowPassword] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   async function submitForm(e) {
     e.preventDefault();
     if (!validate()) return;
-
     try {
       const res = await api.post("/auth/signup", formData);
       login(res.data);
@@ -30,15 +26,12 @@ const Signup = () => {
       setServerError(err.response?.data?.message || "Something went wrong");
     }
   }
-
   function handleInput(e) {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
@@ -46,10 +39,13 @@ const Signup = () => {
 
   function validate() {
     let newErrors = {};
-
+    
     if (!formData.name) newErrors.name = "Name is Required";
     else if (formData.name.length < 3)
-      newErrors.name = "Name must be greater than 3 characters";
+      newErrors.name = "Name must be at least 3 characters";
+    else if (!/^[A-Za-z][A-Za-z0-9._]*$/.test(formData.name))
+      newErrors.name =
+        "Name must start with a letter and contain only letters, digits, '.' or '_'";
 
     if (!formData.email) newErrors.email = "Email is Required";
     else if (!/\S+@\S+\.\S+/.test(formData.email))
@@ -62,7 +58,9 @@ const Signup = () => {
     if (!formData.password) newErrors.password = "Password is Required";
     else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters";
-    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/.test(formData.password))
+    else if (
+      !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/.test(formData.password)
+    )
       newErrors.password =
         "Password must contain uppercase, lowercase, number, and special character";
 
@@ -72,15 +70,15 @@ const Signup = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 px-4">
-     <form
+      <form
         onSubmit={submitForm}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md flex flex-col gap-4"
       >
         <img
-    src="/logo.png"  
-    alt="App Logo"
-    className="w-10 h-10 md:w-20 md:h-20 object-contain mx-auto"
-  /> 
+          src="/logo.png"
+          alt="App Logo"
+          className="w-10 h-10 md:w-20 md:h-20 object-contain mx-auto"
+        />
         <h2 className="text-2xl font-bold text-center text-gray-800">
           Create Account
         </h2>
@@ -105,28 +103,28 @@ const Signup = () => {
         />
         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-       <div className="relative">
-  <input
-    type={showPassword ? "text" : "password"}
-    placeholder="Password"
-    name="password"
-    value={formData.password}
-    onChange={handleInput}
-    className="border p-2 pr-16 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-  />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            name="password"
+            value={formData.password}
+            onChange={handleInput}
+            className="border p-2 pr-16 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
 
-  <button
-    type="button"
-    onClick={() => setShowPassword(!showPassword)}
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-500 font-medium"
-  >
-    {showPassword ? "Hide" : "Show"}
-  </button>
-</div>
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-500 font-medium"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
 
-{errors.password && (
-  <p className="text-red-500 text-sm">{errors.password}</p>
-)}
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password}</p>
+        )}
 
         <input
           type="text"
@@ -148,7 +146,7 @@ const Signup = () => {
         >
           Create Account
         </button>
-        <GoogleLoginButton/>
+        <GoogleLoginButton />
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-500 hover:underline">
@@ -156,7 +154,6 @@ const Signup = () => {
           </Link>
         </p>
       </form>
-
     </main>
   );
 };
