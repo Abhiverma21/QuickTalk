@@ -53,7 +53,7 @@ export const signup = async (req, res) => {
     
     try{
       const info = await transporter.sendMail({
-        from: "QuickTalk",
+       from: process.env.APP_EMAIL,
         to:user.email,
         subject:"OTP for Verification",
         text:`Welcome to the platform. Your OTP for Verification is ${otp}` ,
@@ -148,7 +148,7 @@ export const login = async (req, res) => {
       
       try{
         await transporter.sendMail({
-          from: "QuickTalk",
+          from: process.env.APP_EMAIL,
           to: user.email,
           subject: "OTP for Login Verification",
           text: `Your OTP for login verification is ${otp}`,
