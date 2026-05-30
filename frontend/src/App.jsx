@@ -9,6 +9,7 @@ import GroupChatPage from './pages/GroupChatPage';
 import ProfilePage from './pages/Profile';
 import Notifications from './pages/Notifications';
 import NotificationToast from './components/NotificationToast';
+import OTPVerification from './pages/OTPVerification';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
     <Routes>
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/signup' element={<Signup/>}></Route>
+        <Route path='/verify-otp' element={<OTPVerification/>}></Route>
         <Route path='/invitations' element={<ProtectedRoute><Invitation/></ProtectedRoute>}></Route>
         <Route path='/personalchat' element={<ProtectedRoute><ChatPage/></ProtectedRoute>}></Route>
         <Route path='/group-chat' element={<ProtectedRoute><GroupChatPage/></ProtectedRoute>}></Route>

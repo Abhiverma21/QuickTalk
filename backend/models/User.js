@@ -33,7 +33,22 @@ const userSchema = new mongoose.Schema({
   profilePic: {
   type: String,
   default: ""
-}
+},
+
+  otp: {
+    type: String,
+    default: null
+  },
+
+  otpExpires: {
+    type: Date,
+    default: () => new Date(Date.now() + 5 * 60 * 1000)
+  },
+
+  isVerified: {
+    type: Boolean,
+    default: false
+  }
 
 }, { timestamps: true });
 

@@ -23,8 +23,13 @@ const Login = () => {
 
     try {
       const response = await api.post("/auth/login", formData);
-      login(response.data);
-      navigate("/");
+      
+      if (response.data.requiresOTPVerification) {
+        navigate("/verify-otp", { state: { email: formData.email } });
+      } else {
+        login(response.data);
+        navigate("/");
+      }
     } catch (err) {
       setServerError(err.response?.data?.message || "Something went wrong");
     }

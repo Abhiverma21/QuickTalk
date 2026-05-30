@@ -20,8 +20,7 @@ const Signup = () => {
     if (!validate()) return;
     try {
       const res = await api.post("/auth/signup", formData);
-      login(res.data);
-      navigate("/");
+      navigate("/verify-otp", { state: { email: formData.email } });
     } catch (err) {
       setServerError(err.response?.data?.message || "Something went wrong");
     }
