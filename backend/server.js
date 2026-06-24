@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 export const io = new Server(server, {
   cors: {
-    origin: "https://quick-talk-orpin.vercel.app",
+    origin: ["https://quick-talk-orpin.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   },
