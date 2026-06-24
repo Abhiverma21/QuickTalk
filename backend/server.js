@@ -4,6 +4,8 @@ import { configDotenv } from "dotenv";
 configDotenv();
 import app from "./app.js";
 import User from "./models/User.js";
+import Message from "./models/Message.js";
+import Chat from "./models/Chat.js";
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 export const io = new Server(server, {
@@ -36,6 +38,48 @@ io.on("connection", (socket) => {
       io.to(receiverId).emit("receiveMessage", message);
     } catch (error) {
       console.log("Send Message Error:", error.message);
+    }
+  });
+
+  socket.on("messageDelivered", async ({ messageId }) => {
+    try {
+      const message = await Message.findById(messageId);
+      if (!message) return;
+      if (message.status === "sent") {
+        message.status = "delivered";
+        await message.save();
+      }
+      const populatedMessage = await Message.findById(messageId).populate("sender", "-password");
+      if (!populatedMessage) return;
+      const chat = await Chat.findById(message.chat);
+      if (!chat) return;
+      chat.participants.forEach((participantId) => {
+        io.to(participantId.toString()).emit("messageDelivered", populatedMessage);
+        io.to(participantId.toString()).emit("messageUpdated", populatedMessage);
+      });
+    } catch (error) {
+      console.log("Message Delivered Error:", error.message);
+    }
+  });
+
+  socket.on("messageSeen", async ({ messageId }) => {
+    try {
+      const message = await Message.findById(messageId);
+      if (!message) return;
+      if (message.status !== "seen") {
+        message.status = "seen";
+        await message.save();
+      }
+      const populatedMessage = await Message.findById(messageId).populate("sender", "-password");
+      if (!populatedMessage) return;
+      const chat = await Chat.findById(message.chat);
+      if (!chat) return;
+      chat.participants.forEach((participantId) => {
+        io.to(participantId.toString()).emit("messageSeen", populatedMessage);
+        io.to(participantId.toString()).emit("messageUpdated", populatedMessage);
+      });
+    } catch (error) {
+      console.log("Message Seen Error:", error.message);
     }
   });
   socket.on("disconnect", async () => {
