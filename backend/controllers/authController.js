@@ -59,9 +59,12 @@ export const signup = async (req, res) => {
         text:`Welcome to the platform. Your OTP for Verification is ${otp}` ,
         
       })
+      console.log('✅ Signup email sent:', info.response);
     }catch(err){
-      console.log(err);
-      
+      console.error('❌ Error sending signup email:', err.message);
+      return res.status(500).json({ 
+        message: "Account created but failed to send OTP email. Error: " + err.message 
+      });
     }
     const token = generateToken(user._id);
 
@@ -147,14 +150,18 @@ export const login = async (req, res) => {
       await user.save();
       
       try{
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
           from: process.env.APP_EMAIL,
           to: user.email,
           subject: "OTP for Login Verification",
           text: `Your OTP for login verification is ${otp}`,
         });
+        console.log('✅ Login OTP email sent:', info.response);
       }catch(err){
-        console.log(err);
+        console.error('❌ Error sending login OTP email:', err.message);
+        return res.status(500).json({ 
+          message: "Failed to send OTP. Error: " + err.message 
+        });
       }
       
       return res.status(200).json({
@@ -203,14 +210,18 @@ export const resendOTP = async (req, res) => {
     await user.save();
 
     try {
-      await transporter.sendMail({
-        from: "QuickTalk",
+      const info = await transporter.sendMail({
+        from: process.env.APP_EMAIL,
         to: user.email,
         subject: "OTP for Verification",
         text: `Your new OTP for verification is ${otp}`,
       });
+      console.log('✅ Resend OTP email sent:', info.response);
     } catch (err) {
-      console.log(err);
+      console.error('❌ Error resending OTP email:', err.message);
+      return res.status(500).json({ 
+        message: "Failed to resend OTP. Error: " + err.message 
+      });
     }
 
     return res.status(200).json({
