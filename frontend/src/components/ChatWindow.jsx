@@ -60,7 +60,16 @@ const ChatWindow = ({ chatId }) => {
         message.chat?._id === chatId ||
         message.chat === chatId
       ) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          if (prev.some((m) => m._id === message._id)) {
+            return prev;
+          }
+          return [...prev, message];
+        });
+
+        if (socket && message.sender?._id !== user._id) {
+          socket.emit("messageDelivered", { messageId: message._id });
+        }
       }
     };
 
@@ -88,16 +97,52 @@ const ChatWindow = ({ chatId }) => {
       }
     };
 
+    const handleDelivered = (deliveredMsg) => {
+      if (
+        deliveredMsg.chat?._id === chatId ||
+        deliveredMsg.chat === chatId
+      ) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m._id === deliveredMsg._id &&
+            m.status === "sent" &&
+            m.sender?._id === user._id
+              ? { ...m, status: "delivered" }
+              : m
+          )
+        );
+      }
+    };
+
+    const handleSeen = (seenMsg) => {
+      if (
+        seenMsg.chat?._id === chatId ||
+        seenMsg.chat === chatId
+      ) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m._id === seenMsg._id && m.sender?._id === user._id
+              ? { ...m, status: "seen" }
+              : m
+          )
+        );
+      }
+    };
+
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messageUpdated", handleUpdate);
     socket.on("messageDeleted", handleDelete);
+    socket.on("messageDelivered", handleDelivered);
+    socket.on("messageSeen", handleSeen);
 
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageUpdated", handleUpdate);
       socket.off("messageDeleted", handleDelete);
+      socket.off("messageDelivered", handleDelivered);
+      socket.off("messageSeen", handleSeen);
     };
-  }, [socket, chatId]);
+  }, [socket, chatId, user?._id]);
 
   // Send message
   async function sendMessage() {
@@ -106,6 +151,8 @@ const ChatWindow = ({ chatId }) => {
     setLoading(true);
 
     try {
+      let response;
+
       if (file) {
         const form = new FormData();
 
@@ -116,12 +163,12 @@ const ChatWindow = ({ chatId }) => {
           form.append("content", newMessage);
         }
 
-        await api.post(`/message/send`, form);
+        response = await api.post(`/message/send`, form);
 
         setFile(null);
         setNewMessage("");
       } else {
-        await api.post(`/message/send`, {
+        response = await api.post(`/message/send`, {
           content: newMessage,
           chatId,
         });
@@ -129,7 +176,15 @@ const ChatWindow = ({ chatId }) => {
         setNewMessage("");
       }
 
-      fetchMessages();
+      const sentMessage = response.data;
+      if (sentMessage) {
+        setMessages((prev) => {
+          if (prev.some((m) => m._id === sentMessage._id)) {
+            return prev;
+          }
+          return [...prev, sentMessage];
+        });
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -142,6 +197,20 @@ const ChatWindow = ({ chatId }) => {
       sendMessage();
     }
   };
+
+  // Mark incoming messages seen when they arrive and chat is open
+  useEffect(() => {
+    if (!socket || !chatId) return;
+    const unseenMessages = messages.filter(
+      (msg) =>
+        msg.sender._id !== user._id &&
+        msg.status !== "seen"
+    );
+
+    unseenMessages.forEach((msg) => {
+      socket.emit("messageSeen", { messageId: msg._id });
+    });
+  }, [messages, socket, chatId, user?._id]);
 
   // No chat selected
   if (!chatId) {
@@ -232,16 +301,24 @@ const ChatWindow = ({ chatId }) => {
                     </>
                   )}
 
-                  {/* Time */}
-                  <p className="mt-2 text-[10px] opacity-70 text-right">
-                    {new Date(msg.createdAt).toLocaleTimeString(
-                      [],
-                      {
+                  {/* Time & status */}
+                  <div className="mt-2 flex items-center justify-end gap-2 text-[10px] opacity-70">
+                    <span>
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
-                      }
+                      })}
+                    </span>
+                    {isMe && (
+                      <span className="font-semibold">
+                        {msg.status === "sent" && "✓"}
+                        {msg.status === "delivered" && "✓✓"}
+                        {msg.status === "seen" && (
+                          <span className="text-cyan-300">✓✓</span>
+                        )}
+                      </span>
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
             );

@@ -16,13 +16,20 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!user) return;
 
-const newSocket = io("https://quicktalk-6tna.onrender.com", {
-  transports: ["websocket", "polling"],
-  withCredentials: true,
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});    
+    const isDevelopment =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+    const socketUrl = isDevelopment
+      ? "http://localhost:3200"
+      : import.meta.env.VITE_SOCKET_URL || "https://quicktalk-6tna.onrender.com";
+
+    const newSocket = io(socketUrl, {
+      transports: ["websocket", "polling"],
+      withCredentials: true,
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+    });
 
     Promise.resolve().then(() => setSocket(newSocket));
 
