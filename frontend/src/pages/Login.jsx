@@ -68,10 +68,10 @@ const Login = () => {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 px-4 py-10">
       <form
         onSubmit={submitForm}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md flex flex-col gap-4"
+        className="bg-white p-6 sm:p-8 rounded-3xl shadow-lg w-full max-w-md flex flex-col gap-4"
       >
         <img
           src="/logo.png"

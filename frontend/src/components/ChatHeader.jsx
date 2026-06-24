@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import SocketContext from "../context/SocketContext";
 
-const ChatHeader = ({ chatId }) => {
+const ChatHeader = ({ chatId, onBack }) => {
   const { user } = useContext(AuthContext);
   const { onlineUsers } = useContext(SocketContext);
 
@@ -99,6 +99,15 @@ const ChatHeader = ({ chatId }) => {
   return (
     <div className="h-16 bg-white border-b flex items-center justify-between px-4">
       <div className="flex items-center gap-3">
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:bg-slate-100 md:hidden"
+          >
+            ←
+          </button>
+        )}
         <div className="h-10 w-10 rounded-full overflow-hidden bg-slate-100">
           {otherUser.profilePic ? (
             <img src={otherUser.profilePic} alt={otherUser.name} className="h-full w-full object-cover" />

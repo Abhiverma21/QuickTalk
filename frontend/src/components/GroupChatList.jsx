@@ -83,7 +83,7 @@ const GroupChatList = ({ onSelectChat }) => {
   }, [connectedUsers, user])
 
   return (
-    <div className="w-80 border-r border-slate-200 bg-white h-screen flex flex-col">
+    <div className="w-full bg-white h-full min-h-0 flex flex-col md:w-80">
       <div className="sticky top-0 z-20 border-b border-slate-200 bg-white px-4 py-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -116,7 +116,7 @@ const GroupChatList = ({ onSelectChat }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0">
         {loading ? (
           <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500 shadow-sm">
             Loading your groups...

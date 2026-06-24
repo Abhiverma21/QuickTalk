@@ -93,34 +93,40 @@ const SearchUser = () => {
           users.map((user) => (
             <div
               key={user._id}
-              className="p-3 border rounded-md hover:bg-gray-100 cursor-pointer"
+              className="p-3 border rounded-md hover:bg-gray-100"
             >
-              <div className="flex">
-                 <img src={user.profilePic} className="size-10 rounded-3xl"/>
-                 <div> <p className="font-semibold">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>   <button
-                onClick={() => sendInvitation(user._id)}
-                disabled={
-                  invited.includes(user._id) || friend.includes(user._id)
-                }
-                className={`px-3 py-1 rounded-md text-white ${
-                  friend.includes(user._id)
-                    ? "bg-green-500"
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img
+                    src={user.profilePic}
+                    alt={user.name}
+                    className="h-12 w-12 rounded-3xl object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-semibold truncate">{user.name}</p>
+                    <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => sendInvitation(user._id)}
+                  disabled={
+                    invited.includes(user._id) || friend.includes(user._id)
+                  }
+                  className={`px-3 py-2 rounded-md text-white whitespace-nowrap ${
+                    friend.includes(user._id)
+                      ? "bg-green-500"
+                      : invited.includes(user._id)
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-blue-500"
+                  }`}
+                >
+                  {friend.includes(user._id)
+                    ? "Connected"
                     : invited.includes(user._id)
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-500"
-                }`}
-              >
-                {friend.includes(user._id)
-                  ? "Connected"
-                  : invited.includes(user._id)
-                    ? "Invitation Sent"
-                    : "Add Friend"}
-              </button></div>
-             
+                      ? "Invitation Sent"
+                      : "Add Friend"}
+                </button>
               </div>
-             
-           
             </div>
           ))}
       </div>

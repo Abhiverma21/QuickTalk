@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import SocketContext from "../context/SocketContext";
 import ChatHeader from "./ChatHeader";
 
-const ChatWindow = ({ chatId }) => {
+const ChatWindow = ({ chatId, onBack }) => {
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
 
@@ -224,15 +224,15 @@ const ChatWindow = ({ chatId }) => {
   }
 
   return (
-    <div className="flex w-full flex-col h-screen bg-gray-50 overflow-hidden relative">
+    <div className="flex w-full flex-col h-screen min-h-0 bg-gray-50 overflow-hidden relative">
 
       {/* Header */}
       <div className="shrink-0">
-        <ChatHeader chatId={chatId} />
+        <ChatHeader chatId={chatId} onBack={onBack} />
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-4 space-y-3">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 pb-6 space-y-3">
 
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center rounded-3xl bg-white p-6 text-sm text-slate-500 shadow-sm">
@@ -256,7 +256,7 @@ const ChatWindow = ({ chatId }) => {
                       setEditText(msg.content);
                     }
                   }}
-                  className={`max-w-[72%] rounded-[26px] border px-4 py-3 text-sm shadow-sm transition cursor-pointer ${
+                  className={`max-w-[80%] sm:max-w-[72%] rounded-[26px] border px-4 py-3 text-sm shadow-sm transition cursor-pointer ${
                     isMe
                       ? "border-blue-200 bg-blue-500 text-white"
                       : "border-slate-200 bg-white text-slate-900"
@@ -399,7 +399,7 @@ const ChatWindow = ({ chatId }) => {
       )}
 
       {/* Input Section */}
-      <div className="shrink-0 border-t bg-white p-4">
+      <div className="sticky bottom-0 z-10 shrink-0 border-t bg-white p-4">
 
         {file && (
           <div className="mb-3 flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2 text-sm">

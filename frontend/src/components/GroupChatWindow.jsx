@@ -3,7 +3,7 @@ import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import SocketContext from "../context/SocketContext";
 
-const GroupChatWindow = ({ chatId }) => {
+const GroupChatWindow = ({ chatId, onBack }) => {
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
 
@@ -184,9 +184,18 @@ const GroupChatWindow = ({ chatId }) => {
   }
 
   return (
-    <div className="flex w-full flex-col h-screen bg-gray-50 overflow-hidden relative ">
-      <div className="h-20 bg-white border-b px-5 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+    <div className="flex w-full flex-col h-screen min-h-0 bg-gray-50 overflow-hidden relative">
+      <div className="h-20 bg-white border-b px-4 py-3 flex items-center justify-between gap-3 sm:px-5 sm:py-4">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:bg-slate-100 md:hidden"
+            >
+              ←
+            </button>
+          )}
           <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100">
             {group?.groupPic ? (
               <img src={group.groupPic} alt={group?.groupName} className="h-full w-full object-cover" />
@@ -210,7 +219,7 @@ const GroupChatWindow = ({ chatId }) => {
         </button>
       </div>
 
-      <div className="flex flex-col flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
+      <div className="flex flex-col flex-1 min-h-0 overflow-y-auto p-4 pb-6 space-y-3">
         {messages.length === 0 ? (
           <div className="flex flex-1 min-h-60 items-center justify-center rounded-3xl bg-white p-6 text-sm text-slate-500 shadow-sm">
             No messages yet. Send the first one to start the conversation.
@@ -396,7 +405,7 @@ const GroupChatWindow = ({ chatId }) => {
         </div>
       )}
 
-      <div className="p-4 border-t bg-white">
+      <div className="sticky bottom-0 z-10 p-4 border-t bg-white">
         {file && (
           <div className="mb-3 flex items-center justify-between rounded-xl bg-slate-100 px-3 py-2 text-sm">
             <span className="truncate text-slate-700">{file.name}</span>

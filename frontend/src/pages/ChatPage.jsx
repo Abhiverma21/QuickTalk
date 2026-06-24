@@ -15,12 +15,14 @@ import ChatWindow from '../components/ChatWindow';
   
    return (
     <>
-        
-        <div className='flex'>
-
-        <ChatList selectedChat={selectedChat} onSelectChat={setSelectedChat}/>
-        <ChatWindow chatId={selectedChat} />
+      <div className="flex h-screen min-h-screen flex-col md:flex-row">
+        <div className={`md:w-[360px] w-full border-b border-slate-200 md:border-r md:border-b-0 ${selectedChat ? 'hidden md:block' : ''}`}>
+          <ChatList selectedChat={selectedChat} onSelectChat={setSelectedChat} />
         </div>
+        <div className={`${selectedChat ? 'block' : 'hidden md:block'} flex-1 w-full h-full`}>
+          <ChatWindow chatId={selectedChat} onBack={() => setSelectedChat(null)} />
+        </div>
+      </div>
     </>
   )
 }

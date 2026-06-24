@@ -140,7 +140,7 @@ const ChatList = ({ selectedChat, onSelectChat }) => {
   }, [acceptedFriends, searchText]);
 
   return (
-    <div className="w-full max-w-95 border-r border-slate-200 bg-slate-50 h-screen overflow-hidden">
+    <div className="w-full bg-slate-50 h-full min-h-0 overflow-hidden">
       <div className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50 px-4 py-4 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-4">
          
